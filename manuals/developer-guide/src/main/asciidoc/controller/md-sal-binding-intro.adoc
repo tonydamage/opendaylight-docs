@@ -1,0 +1,138 @@
+=== Using MD-SAL Binding APIs
+:toc:
+
+MD-SAL Binding APIs are hand-coded APIs, which extensivelly uses APIs and classes
+generated from YANG models, to provide compile-time safety and compile-time
+checks on correct model usage.
+
+MD-SAL Binding APIs are available as Maven Depedency:
+
+// FIXME: Add dependency
+
+==== Instance Identifier
+
+The Instance Identifier is the unique identifier of an element (location) in
+the yang data tree: basically, it is the *path* to the node that uniquely
+identifies all the parent nodes of the node.
+
+The unique identification of list elements requires the specification of
+key values as well.
+
+
+*Example* +
+
+Consider the following simple YANG model: +
+
+[source,yang]
+----
+module people {
+    namespace "urn:example:people";
+    prefix inv;
+    revision "2013-06-07";
+    container people {
+        list person {
+            key "nick";
+            leaf "nick" {
+                type "string";
+            }
+        }
+    }
+}
+----
+
+*An example having one instance of node with the name _foo_* +
+
+Let us assume that we want to create an instance identifier for the node foo in
+the following formats: +
+
+
+[source,java]
+----
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yang.gen.urn.example.person.rev130607.People;
+import org.opendaylight.yang.gen.urn.example.person.rev130607.people.Person;
+import org.opendaylight.yang.gen.urn.example.person.rev130607.people.PersonKey;
+
+InstanceIdentifier<Person> identifier = InstanceIdentifier.create(People.class).child(Person.class,new PersonKey("author"));
+----
+
+==== RPC
+
+In MD-SAL terminology, the term 'RPC' is used to define the input and output for
+a procedure (function) that is to be provided by a provider, and mediated by the
+MD-SAL.
+
+Currently there are following types of RPCs (RPC services): +
+
+* Global: One service instance (implementation) per controller container or
+  mount point
+* Routed: Multiple service instances (implementations) per controller container
+  or mount point
+
+===== Global RPCs service
+
+* There is only one instance of a Global Service per controller instance.
+(Note that a controller instance can consist of a cluster of controller nodes.)
+
+Receiving implementation is selected only on Rpc Type, which is learned from
+generated `RpcService` class and a name of a method invoked on that interface.
+
+
+===== Routed service
+
+* There can be multiple instances (implementations) of a service per controller
+instance
+* Can be used for southbound plugins or for horizontal scaling (load-balancing)
+of northbound plugins (services)
+
+*Routing* +
+
+Routing is done based on the contents of a message, for example, 'Node Reference'.
+The field in a message that is used for routing is specified in a YANG model by
+using the routing-reference statement from the yang-ext model. +
+
+* Binding Aware MD-SAL (sal-binding)
+* RPC Type: Identified by an RpcService subclass and the name of the method
+  invoked on that interface
+* Instance Identifier: In a data tree, identifies the element instance that will
+  be used as the route target.
+
+The used class is `opendaylight.yang.binding.InstanceIdentifier`
+
+
+The Instance Identifier is learned from the message payload and from the model.+
+
+// Introde section / using and implementing RPCs
+RPCs in various API types: +
+
+// FIXME: Inline example in this section
+* Java Generated APIs: For each model there is *Service interface.
+See https://wiki.opendaylight.org/view/YANG_Tools:YANG_to_Java_Mapping#Rpc[YANG Tools: Yang to Java mapping-RPC]  to understand how YANG statements maps to Service interface.
+** Providers expose their implementation of *Service by registering their implementation to RpcProviderRegistry.
+** Consumers get the *Service implementation from RpcConsumerRegistry. If the implementer uses a different API type, MD-SAL automatically translates data in the background.
+* DOM APIs: RPCs are identified by QName.
+** Providers expose their implementation of RPC identified by QName registering their RpcImplementation to RpcProvisionRegistry.
+** Consumers get the *Service implementation from RpcConsumerRegistry. If the implementer uses different API type, MD-SAL automatically translates data in the background.
+
+// FIXME: Note with link to RESTCONF / NETCONF section.
+// * REST APIs: RPCs are identified by the model name and their name.
+// * Consumers invoke RPCs by invoking POST operation to /restconf/operations/model-name:rpc-name.
+
+==== Notification
+
+In YANG, Notifications represent asynchronous events, published by providers
+for listeners.
+
+RPCs in various API types: +
+
+// FIXME: Inline example in this section
+* Java Generated APIs: For each model, there is *Listener interface and transfer
+ object for each notification. See https://wiki.opendaylight.org/view/YANG_Tools:YANG_to_Java_Mapping#Notification[YANG Tools: Yang to Java mapping-Notification] to understand how YANG statements map to the Notifications interface.
+** Providers publish notifications by invoking the publish method on NotificationPublishService.
+** To receive notifications, consumers register their implementation of *Listener to NotificationBrokerService. If the notification publisher uses a different API type, MD-SAL automatically translates data in the background.
+* DOM APIs: Notifications are represented only by XML Payload.
+** Providers publish notifications by invoking the publish method on NotificationPublishService.
+** To receive notifications, consumers register their implementation of *Listener to NotificationBrokerService. If the notification publisher uses a different API type, MD-SAL automatically translates data in the background.
+
+// FIXME: Links to RESTCONF / NETCONF section
+// * REST APIs: Notifications are currently not supported.

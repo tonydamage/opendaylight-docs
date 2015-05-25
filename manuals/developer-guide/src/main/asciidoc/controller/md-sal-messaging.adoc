@@ -1,0 +1,6 @@
+== MD-SAL Messaging patterns
+
+=== Unicast patterns
+
+
+=== Multicast patterns
