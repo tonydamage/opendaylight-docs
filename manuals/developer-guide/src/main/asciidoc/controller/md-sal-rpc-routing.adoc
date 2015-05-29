@@ -33,14 +33,14 @@ which will contain *context reference* on which they will be routed.
 
 [source,yang]
 ----
-identity node-context {
+identity node-context { // <1>
     description "Identity used to mark node context";
 }
 ----
 
-This declares an identity named `node-context`, which is used as marker
-for node-based routing and is used in other places to reference that routing
-type.
+<1> This declares an identity named `node-context`, which is used as marker
+    for node-based routing and is used in other places to reference that routing
+    type.
 
 ===== Declaring possible context instances
 
@@ -50,24 +50,24 @@ need to model that set accordingly using `context-instance` extension from the
 
 [source,yang]
 ----
-import yang-ext { prefix ext; }
+import yang-ext { prefix ext; } // <1>
 
 /** Base structure **/
 container nodes {
     list node {
         key "id";
-        ext:context-instance "node-context";
-        // other node-related fields would go here
+        ext:context-instance "node-context"; // <2>
+        uses node;
     }
 }
 ----
 
-The statement `ext:context-instance "node-context";` marks any element of the
-`list node` as a possible valid *context instance* in `node-context` based
-routing.
+<1> Imports `yang-ext` module which contains required YANG extenstions
+<2> marks any instance of
+`list node` as possible valid context instance in `node-context` based routing.
 
 [NOTE]
-====
+--
 The existence of a *context instance* node in operational or config data tree
 is not strongly tied to existence of RPC implementation.
 
@@ -80,7 +80,7 @@ Details when RPC implementations are available should be documented in YANG mode
 If user invokes RPC with a *context instance* that has no registered
 implementation, the RPC invocation will fail with the exception
 `DOMRpcImplementationNotAvailableException`.
-====
+--
 
 ===== Declaring a routed RPC
 
@@ -96,18 +96,19 @@ on leaf, which will be used for RPC routing.
 rpc example-routed-rpc  {
     input {
         leaf node {
-            ext:context-reference "node-context";
-            type "instance-identifier";
+            ext:context-reference "node-context"; // <1>
+            type "instance-identifier"; // <2>
         }
         // other input to the RPC would go here
     }
 }
 ----
 
-The statement `ext:context-reference "node-context"` marks `leaf node` as
-*context reference* of type `node-context`. The value of this leaf, will be used
-by the MD-SAL to select the particular RPC implementation that registered itself
-as the implementation of the RPC for particular *context instance*.
+<1> marks `leaf node` as *context reference* of type `node-context`.
+Value of this leaf, will be used by MD-SAL to select RPC implementation,
+which registered itself as implementation of RPC for particular *context instance*.
+<2> Type of `context-reference` leaf must be `instance-identifier` or type
+derived from it.
 
 ==== Using routed RPCs
 
