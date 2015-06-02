@@ -36,6 +36,8 @@ include::bgpcep/odl-bgpcep-pcep-all-user.adoc[PCEP]
 
 include::l2switch/l2switch-user.adoc[]
 
+include::opflex/agent-ovs-user.adoc[]
+
 include::sdninterfaceapp/odl-sdninterfaceapp-all-user.adoc[ODL-SDNi]
 
 include::sfc/sfc.adoc[Service Function Chain]
@@ -48,10 +50,12 @@ include::usc/odl-usc-channel-user.adoc[USC]
 
 include::ttp/ttp-cli-tools-user.adoc[TTP]
 
-include::capwap/capwap-user.adoc[CAPWAP] 
+include::capwap/capwap-user.adoc[CAPWAP]
 
 include::tsdr/tsdr-hbase-user.adoc[]
 
 include::tsdr/tsdr-h2-user.adoc[]
 
 include::didm/didm-user.adoc[]
+
+include::nic/nic-user.adoc[NIC]

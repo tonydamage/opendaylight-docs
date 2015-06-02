@@ -56,17 +56,25 @@ include::bgpcep/odl-bgpcep-bgp-all-dev.adoc[BGP]
 
 include::bgpcep/odl-bgpcep-pcep-all-dev.adoc[PCEP]
 
+include::capwap/capwap-dev.adoc[CAPWAP]
+
 include::iotdm/iotdm-dev.adoc[]
 
 include::lacp/lacp-dev.adoc[]
 
 include::l2switch/l2switch-dev.adoc[]
 
-include::nic/nic-model-dev.adoc[]
+include::nic/nic-dev.adoc[]
 
 include::neutron/neutron.adoc[]
 
 include::openflowjava/odl-openflowjava-protocol-dev.adoc[]
+
+include::opflex/libopflex-dev.adoc[]
+
+include::opflex/genie-dev.adoc[]
+
+include::opflex/agent-ovs-dev.adoc[]
 
 include::ovsdb/ovsdb-developer.adoc[]
 
@@ -83,6 +91,8 @@ include::topoprocessing/odl-topoprocessing-framework-dev.adoc[]
 include::ttp/ttp-model-dev.adoc[]
 
 include::ttp/ttp-cli-tools-dev.adoc[]
+
+include::usc/odl-usc-channel-dev.adoc[]
 
 include::didm/didm-dev.adoc[]
 
